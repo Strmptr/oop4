@@ -23,11 +23,11 @@ namespace Lab3
 {
     public partial class MainWindow : Window
     {
-         List<MapObject> mapObjects = new List<MapObject>();
-          List<MapObject> secondList = new List<MapObject>();
-          PointLatLng point = new PointLatLng();
-          List<PointLatLng> areapoints = new List<PointLatLng>();
-          List<PointLatLng> routepoints = new List<PointLatLng>();
+        List<MapObject> mapObjects = new List<MapObject>();
+        List<MapObject> secondList = new List<MapObject>();
+        PointLatLng point = new PointLatLng();
+        List<PointLatLng> areapoints = new List<PointLatLng>();
+        List<PointLatLng> routepoints = new List<PointLatLng>();
         bool creationmode = false;
         bool secondact = false;
 
@@ -56,11 +56,11 @@ namespace Lab3
             Map.CanDragMap = true;
             Map.DragButton = MouseButton.Left;
         }
-        
+
 
         private void Map_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-           
+
         }
 
         private void MapLoaded(object sender, RoutedEventArgs e)
@@ -73,18 +73,18 @@ namespace Lab3
             PointLatLng point = Map.FromLocalToLatLng((int)e.GetPosition(Map).X, (int)e.GetPosition(Map).Y);
             if (creationmode == true)
             {
-                    areapoints.Add(point);  
-             }
-            
+                areapoints.Add(point);
+            }
+
             else
             {
                 OList.Items.Clear();
-               // OList.Items.Add(null);
+                // OList.Items.Add(null);
                 secondList = mapObjects.OrderBy(mobject => mobject.getDistance(point)).ToList();
                 foreach (MapObject obj in secondList)
                 {
                     string mapObjectAndDistanceString = new StringBuilder()
-                        
+
                         .Append(" - ")
                         .Append(obj.getTitle())
                         .Append(" - ")
@@ -93,7 +93,7 @@ namespace Lab3
                     OList.Items.Add(mapObjectAndDistanceString);
                 }
                 secondact = true;
-                
+
             }
 
         }
@@ -126,7 +126,7 @@ namespace Lab3
                     }
                 case 1:
                     {
-                        if (points.Count<1)
+                        if (points.Count < 1)
                         {
                             MessageBox.Show("Выберите точки");
                             return;
@@ -179,7 +179,7 @@ namespace Lab3
                             Map.Position = obm.getFocus();
                         }
                     }
-                   
+
                 }
             }
         }
@@ -187,7 +187,7 @@ namespace Lab3
         Random rnd = new Random();
 
         //Получить очередное (в данном случае - первое) случайное число
-       
+
 
         //Вывод полученного числа в консоль
 
@@ -203,7 +203,7 @@ namespace Lab3
                 {
                     if (obj.getTitle() == OName.Text)
                     {
-                        OName.Text += OName.Text + rnd.Next().ToString(); 
+                        OName.Text += OName.Text + rnd.Next().ToString();
                     }
 
 
@@ -240,8 +240,8 @@ namespace Lab3
         {
             createra.IsEnabled = true;
             clearpoints.IsEnabled = true;
-           
-          //  areapoints = new List<PointLatLng>();
+
+            //  areapoints = new List<PointLatLng>();
         }
 
         private void Findrb_Checked(object sender, RoutedEventArgs e)
@@ -253,7 +253,7 @@ namespace Lab3
         private void Createrb_Checked(object sender, RoutedEventArgs e)
         {
             findrb.IsChecked = false;
-            creationmode = true; 
+            creationmode = true;
         }
 
         private void Locate_Click(object sender, RoutedEventArgs e)
@@ -265,12 +265,12 @@ namespace Lab3
                 {
                     if (i == 0)
                     {
-                       // OList.Items.Add(null);
-                        OList.Items.Add( mapObjects[i].getTitle());
+                        // OList.Items.Add(null);
+                        OList.Items.Add(mapObjects[i].getTitle());
                     }
                     else
                     {
-                        OList.Items.Add( mapObjects[i].getTitle());
+                        OList.Items.Add(mapObjects[i].getTitle());
                     }
                 }
                 secondact = false;
@@ -284,11 +284,11 @@ namespace Lab3
 
                     if (i == 0)
                     {
-                    //  OList.Items.Add(null);
+                        //  OList.Items.Add(null);
                         if (mapObjects[i].getTitle().Contains(objfind.Text))
                         {
                             OList.Items.Add(mapObjects[i].getTitle());
-                            secondList.Add(mapObjects[i]);      
+                            secondList.Add(mapObjects[i]);
                         }
                     }
                     else
@@ -305,12 +305,12 @@ namespace Lab3
 
         private void OList_MouseLeave(object sender, MouseEventArgs e)
         {
-           // OList.SelectedIndex = 0;
+            // OList.SelectedIndex = 0;
         }
 
         private void Clearpoints_Click(object sender, RoutedEventArgs e)
         {
-            
+
             areapoints = new List<PointLatLng>();
             routepoints = new List<PointLatLng>();
             clearpoints.IsEnabled = true;
@@ -376,21 +376,24 @@ namespace Lab3
                     }
                 }
 
-                var aaa = nearestCar.MoveTo(startOfRoute);
-                createMarker(aaa.Points, 3);
+                if (nearestCar != null && h != null)
+                {
 
-                RoutingProvider routingProvider = GMapProviders.OpenStreetMap;
-                MapRoute route = routingProvider.GetRoute(
-                    startOfRoute,
-                    endOfRoute,
-                    false,
-                    false,
-                    15);
-                createMarker(route.Points, 3);
-                nearestCar.Arrived += h.CarArrived;
-                h.seated += nearestCar.getintocar;
-                nearestCar.Follow += Focus_Follow;
+                    var aaa = nearestCar.MoveTo(startOfRoute);
+                    createMarker(aaa.Points, 3);
 
+                    RoutingProvider routingProvider = GMapProviders.OpenStreetMap;
+                    MapRoute route = routingProvider.GetRoute(
+                        startOfRoute,
+                        endOfRoute,
+                        false,
+                        false,
+                        15);
+                    createMarker(route.Points, 3);
+                    nearestCar.Arrived += h.CarArrived;
+                    h.seated += nearestCar.getintocar;
+                    nearestCar.Follow += Focus_Follow;
+                }
 
                 //  nearestCar.Arrived -= h.CarArrived;
                 //  h.seated -= nearestCar.getintocar;
@@ -398,6 +401,6 @@ namespace Lab3
         }
     }
 
-    
+
 
 }
